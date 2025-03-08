@@ -6,7 +6,7 @@ class Blueprints::ShowView < ApplicationView
     @blueprint = blueprint
   end
 
-  def template
+  def view_template
     section(aria_labelledby: "blueprint-heading", class: "flex h-full min-w-0 flex-1 flex-col overflow-hidden xl:order-last") do
       render BlueprintView.new(blueprint: @blueprint)
     end
