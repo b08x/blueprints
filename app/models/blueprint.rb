@@ -6,6 +6,10 @@ class Blueprint < ApplicationRecord
 
   validates :name, uniqueness: { scope: %i[description code] }
 
+  after_save do
+    Rails.logger.info "Blueprint embedding dimension: #{embedding.size}" if embedding.present?
+  end
+
   def as_vector
     { description: description, name: name }.to_json
   end
