@@ -27,6 +27,6 @@ module Blueprints
     # config.eager_load_paths << Rails.root.join("extras")
 
     # config.ai_provider supported values: "openai"(default), and "google"
-    config.ai_provider = "openai"
+    config.ai_provider = "google"
   end
 end

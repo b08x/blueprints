@@ -6,9 +6,9 @@ LangchainrbRails.configure do |config|
         when "google"
           Langchain::LLM::GoogleGemini.new(api_key: ENV["GEMINI_API_KEY"])
         when "openai"
-          Langchain::LLM::OpenAI.new(api_key: ENV["OPENAI_API_KEY"])
+          Langchain::LLM::OpenAI.new(api_key: ENV["OPENAI_API_KEY"], llm_options: {base_url: ENV["OPENAI_API_BASE_URL"]})
         else
-          Langchain::LLM::OpenAI.new(api_key: ENV["OPENAI_API_KEY"])
+          Langchain::LLM::OpenAI.new(api_key: ENV["OPENAI_API_KEY"], llm_options: {base_url: ENV["OPENAI_API_BASE_URL"]})
         end
 
   config.vectorsearch = Langchain::Vectorsearch::Pgvector.new(
