@@ -1,75 +1,65 @@
 services:
+  nginx:
+    image: nginx:latest
+    container_name: blueprints-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - web
+    networks:
+      - blueprints
   web:
     build:
       context: .
       dockerfile: Dockerfile
-    image: blueprints:latest # You can change this to your desired image name
+    image: blueprints:latest
     container_name: blueprints-web
     command: ./bin/rails server -b 0.0.0.0
-    ports:
-      - "3000:3000"
+    # Port 3000 is now only exposed to the internal network, not to the host
+    expose:
+      - "3000"
+    env_file:
+      - .env
     environment:
-      - RAILS_ENV=development # Or production if you are ready
-      - DATABASE_URL=postgres://postgres:password@db:5432/blueprints_development # Adjust database parameters
-      # Add other environment variables if needed (e.g., REDIS_URL, etc.)
+      - RAILS_ENV=development
+      - DATABASE_URL=postgresql://postgres:blueprints@pgvector:5432/blueprints_development
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
     depends_on:
-      - db
+      - pgvector
     volumes:
-      - .:/rails # Mounts your current directory into the /rails directory inside the container
+      - .:/rails
       - bundle_cache:/usr/local/bundle
-      - rails_storage:/rails/storage # Persists the storage folder
+      - rails_storage:/rails/storage
     networks:
       - blueprints
-  db:
-    image: postgres:14-alpine
-    container_name: blueprints-db
+  pgvector:
+    image: ankane/pgvector
+    container_name: blueprints-pgvector
     environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password # Change this to a strong password in production
-      - POSTGRES_DB=blueprints_development # Or myapp_production if you are in production
+      - POSTGRES_PASSWORD=blueprints
+      - POSTGRES_DB=blueprints_development
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
-    networks:
-      - blueprints
-  redis_service:
-    image: redis/redis-stack:latest
-    container_name: blueprints-redis
-    restart: unless-stopped
-    environment:
-      PUID: 1000
-      PGID: 1000
-    volumes:
-      - redis_cache:/data
-    ports:
-      - "6379:6379"
-      - "8081:8081"
-      - "8001:8001"
-    networks:
-      - blueprints
-  chroma_service:
-    image: ghcr.io/chroma-core/chroma:latest
-    container_name: blueprints-chromadb
-    restart: unless-stopped
-    volumes:
-      - chromadb_storage:/chroma/chroma/
-    environment:
-      PUID: 1000
-      PGID: 1000
-      IS_PERSISTENT: TRUE
-    ports:
-      - "8020:8000"
+      - postgresql_local_data:/data
+      - postgresql_data:/var/lib/postgresql/data
     networks:
       - blueprints
 
 volumes:
   bundle_cache:
-  db_data:
+    driver: local
+  postgresql_data:
+    driver: local
+  postgresql_local_data:
+    driver: local
   rails_storage:
-  redis_cache:
-  chromadb_storage:
+    driver: local
 
 networks:
-  flowbots:
+  blueprints:
     driver: bridge

@@ -36,13 +36,29 @@ Blog post sharing some background info: [Is Software Engineering Dead?](https://
 * Generate the tailwind css: `bin/rails tailwindcss:build`
 * Run the server: `bin/rails s`
 
+### Docker Compose Setup
+
+Alternatively, you can use Docker Compose to run the application:
+
+* Clone the repo: `git clone https://github.com/sublayerapp/blueprints`
+* Change to the blueprints directory: `cd blueprints`
+* Start the services: `docker-compose up -d`
+* Access the application at `http://localhost` (Nginx proxy) or `http://localhost:3000` (direct Rails access)
+
+The Docker Compose setup includes:
+* Rails application server
+* PostgreSQL database with pgvector extension
+* Nginx as a frontend proxy
+
+To stop the services: `docker-compose down`
+
 ## Usage
 
-With a server running on http://localhost:3000 you can use any of the above
+With a server running on http://localhost:3000 (or http://localhost if using the Nginx proxy) you can use any of the above
 plugins to start storing blueprints locally and generating new ones.
 
 Once you have a handful of blueprints you can view them and their associated
-descriptions at `http://localhost:3000`
+descriptions at `http://localhost:3000` (or `http://localhost` if using the Nginx proxy)
 
 ### LLM Performance specs
 
