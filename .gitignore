@@ -42,3 +42,8 @@
 
 # Ignore spec_performance results
 /spec_performance/llms/results/**/*.csv
+
+.code-packager*
+blueprints.csv
+blueprints.json
+blueprints_chunked.csv
