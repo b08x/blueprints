@@ -3,7 +3,7 @@
 
 if Rails.configuration.ai_provider == "google"
   Sublayer.configuration.ai_provider = Sublayer::Providers::Gemini
-  Sublayer.configuration.ai_model = "gemini-2.0-flash-exp"
+  Sublayer.configuration.ai_model = "gemini-2.0-flash"
 else
   Sublayer.configuration.ai_provider = Sublayer::Providers::OpenAI
   Sublayer.configuration.ai_model = "qwen/qwen-2.5-coder-32b-instruct:free"
